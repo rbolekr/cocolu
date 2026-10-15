@@ -1,4 +1,7 @@
 <svg style="max-width:100%; height:auto; display:block;" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
+  <!-- default geometry values for this type of wall -->
+  <metadata>{"width":"1500","height":"600"}</metadata>
+
   <rect width="800" height="500" fill="#FFFEFB"/>
 
   <!-- floor -->

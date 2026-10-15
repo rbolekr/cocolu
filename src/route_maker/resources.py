@@ -1,19 +1,35 @@
 from pathlib import Path
 import streamlit as st
+import json
+import xml.etree.ElementTree as ETree
 
 @st.cache_data
 def load_wall_svgs():
     img_dir = Path(__file__).parent / "images"
-    svgs = []
-    for path in sorted(img_dir.glob("*.svg")):  # sorted = stable order
+    svgs = {}
+
+    for path in sorted(img_dir.glob("*.svg")):
         svg_text = path.read_text(encoding="utf-8")
-        svgs.append({
-            "id": path.stem,          # filename without .svg
-            "svg": svg_text,          # raw <svg>...</svg>
-        })
+
+        svg_xml = ETree.fromstring(svg_text)
+        metadata_raw = svg_xml.find(f"{{{"http://www.w3.org/2000/svg"}}}metadata")
+        metadata_json = {}
+
+        if metadata_raw is not None and metadata_raw.text:
+            try:
+                metadata_json = json.loads(metadata_raw.text)
+            except json.JSONDecodeError:
+                metadata_json = {"raw": metadata_raw.text}
+
+        svgs[path.stem] = {
+            "id": path.stem,            # filename without .svg
+            "metadata": metadata_json,  # geometry values
+            "svg": svg_text,            # raw <svg>...</svg>
+        }
+
     return svgs
 
-def generate_wall_cards() -> str:
+def generate_wall_cards(svgs):
     bc = "#e5e5e5"
     bw = "1px"
     bg = "white"
@@ -34,13 +50,12 @@ def generate_wall_cards() -> str:
     }
     </style>
     """
-    svgs = load_wall_svgs()
 
-    for index, svg in enumerate(svgs):
+    for svg_id, svg_props in svgs.items():
         result += f"""
-        <a href='javascript:void(0)' id='{svg['id']}' style="text-decoration:none; display:block; width:100%; margin-bottom:12px; color:inherit;">
+        <a href='javascript:void(0)' id='{svg_id}' style="text-decoration:none; display:block; width:100%; margin-bottom:12px; color:inherit;">
           <div style="border:{bw} solid {bc}; border-radius:12px; padding:12px; background:{bg}; cursor:pointer; width:100%; box-sizing:border-box; display:flex;">
-            <div class="card-svg">{svg['svg']}</div>
+            <div class="card-svg">{svg_props['svg']}</div>
           </div>
         </a>
         """
