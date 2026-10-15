@@ -1,7 +1,11 @@
 from pathlib import Path
+from typing import Final
 import streamlit as st
 import json
 import xml.etree.ElementTree as ETree
+
+WIDE_CARD_HEIGHT: Final[int] = 300
+TALL_CARD_HEIGHT: Final[int] = 500
 
 @st.cache_data
 def load_svgs(pattern):
@@ -29,25 +33,25 @@ def load_svgs(pattern):
 
     return svgs
 
-def generate_cards(svgs):
+def generate_cards(svgs, height = WIDE_CARD_HEIGHT):
     bc = "#e5e5e5"
     bw = "1px"
     bg = "white"
 
-    result = """
+    result = f"""
     <style>
-    .card-svg {
-      height:300px; max-height:300px; width:100%;
+    .card-svg {{
+      height:{height}px; max-height:{height}px; width:100%;
       display:flex; align-items:center; justify-content:center;
       overflow:hidden;
-    }
-    .card-svg svg {
+    }}
+    .card-svg svg {{
       height:100% !important;
-      max-height:300px !important;
+      max-height:{height}px !important;
       width:100% !important;
       object-fit:contain;
       display:block;
-    }
+    }}
     </style>
     """
 

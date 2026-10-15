@@ -1,6 +1,6 @@
 import streamlit as st
 from st_click_detector import click_detector
-from resources import load_svgs, generate_cards
+from resources import load_svgs, generate_cards, WIDE_CARD_HEIGHT, TALL_CARD_HEIGHT
 
 st.set_page_config(layout="wide")
 st.title("Climbing Route Maker")
@@ -37,7 +37,7 @@ if 'selected_wall' not in st.session_state:
     # click_detector returns the id of the selected wall, that id is used to look up the metadata. The metadata is then added to the session state to
     # be used by whatever algorithm runs.
     svgs = load_svgs("wall_*.svg")
-    clicked = click_detector(generate_cards(svgs))
+    clicked = click_detector(generate_cards(svgs, WIDE_CARD_HEIGHT))
 
     if clicked:
         st.session_state.selected_wall = clicked
@@ -53,7 +53,7 @@ elif 'selected_algo' not in st.session_state:
     # There are no extra bits of metadata stored in the algo svgs. There could be but for the moment it is the code that contains any defaults.
     # Still, we use the same logic pattern just in case we change our minds later.
     svgs = load_svgs("algo_*.svg")
-    clicked = click_detector(generate_cards(svgs))
+    clicked = click_detector(generate_cards(svgs, TALL_CARD_HEIGHT))
 
     if clicked:
         st.session_state.selected_algo = clicked
