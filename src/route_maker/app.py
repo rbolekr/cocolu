@@ -1,6 +1,6 @@
 import streamlit as st
 from st_click_detector import click_detector
-from resources import generate_wall_cards, load_wall_svgs
+from resources import load_svgs, generate_cards
 
 st.set_page_config(layout="wide")
 st.title("Climbing Route Maker")
@@ -34,9 +34,10 @@ if 'selected_wall' not in st.session_state:
     # geometry data to describe the real wall. Then the more appropriate place would be a database or perhaps just JSON files.
     #
     # So what is going on here is the svg files are loaded and the 'metadata' is read in together with the svg visual data. Then, when the
-    # click_detector returns the id of the selected wall, that id is used to look up the metadata. Since that's the only thing we care
-    svgs = load_wall_svgs()
-    clicked = click_detector(generate_wall_cards(svgs))
+    # click_detector returns the id of the selected wall, that id is used to look up the metadata. The metadata is then added to the session state to
+    # be used by whatever algorithm runs.
+    svgs = load_svgs("wall_*.svg")
+    clicked = click_detector(generate_cards(svgs))
 
     if clicked:
         st.session_state.selected_wall = clicked
@@ -48,3 +49,12 @@ if 'selected_wall' not in st.session_state:
 elif 'selected_algo' not in st.session_state:
     st.divider()
     st.markdown("""**Please select a routing algorithm:**""")
+
+    # There are no extra bits of metadata stored in the algo svgs. There could be but for the moment it is the code that contains any defaults.
+    # Still, we use the same logic pattern just in case we change our minds later.
+    svgs = load_svgs("algo_*.svg")
+    clicked = click_detector(generate_cards(svgs))
+
+    if clicked:
+        st.session_state.selected_algo = clicked
+        st.rerun()

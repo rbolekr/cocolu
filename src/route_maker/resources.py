@@ -4,11 +4,11 @@ import json
 import xml.etree.ElementTree as ETree
 
 @st.cache_data
-def load_wall_svgs():
+def load_svgs(pattern):
     img_dir = Path(__file__).parent / "images"
     svgs = {}
 
-    for path in sorted(img_dir.glob("*.svg")):
+    for path in sorted(img_dir.glob(pattern)):
         svg_text = path.read_text(encoding="utf-8")
 
         svg_xml = ETree.fromstring(svg_text)
@@ -29,7 +29,7 @@ def load_wall_svgs():
 
     return svgs
 
-def generate_wall_cards(svgs):
+def generate_cards(svgs):
     bc = "#e5e5e5"
     bw = "1px"
     bg = "white"
