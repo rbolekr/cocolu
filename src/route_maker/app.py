@@ -1,3 +1,4 @@
+import datetime
 import streamlit as st
 from collections import namedtuple
 from st_click_detector import click_detector
@@ -27,6 +28,13 @@ def debug_sidebar():
             st.rerun()
 
 debug_sidebar()
+
+def generate_custom_filename():
+    start = datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)
+    now = datetime.datetime.now(tz=datetime.timezone.utc)
+    uniqueness = int((now - start).total_seconds() * 1000)
+    return f"route_{st.session_state.get("2", 0)}x{st.session_state.get("1", 0)}_{uniqueness}.svg"
+
 
 # Disable the wall selection.
 #
@@ -129,4 +137,9 @@ else:
             header[0].subheader('Output')
 
             st.iframe(html, height=532)
-            st.download_button("Download SVG / SVG-Datei herunterladen", data=svg_code, file_name=f"graphic_sample.svg", mime="image/svg+xml", width='stretch')
+            st.download_button(
+                "Download SVG / SVG-Datei herunterladen",
+                data=svg_code,
+                file_name=generate_custom_filename(),
+                mime="image/svg+xml",
+                width='stretch')
