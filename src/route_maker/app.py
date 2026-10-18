@@ -74,54 +74,44 @@ else:
     print(f"[DEBUG] parsed_algo_entry: {parsed_algo_entry}")
 
     with st.form("algo_properties"):
-        st.markdown("""Algorithm name and brief description here. Keep it to one line preferably.""")
+        header = st.columns([1])
+        header[0].subheader('Algorithm Name')
 
-        with st.expander("A more in-depth look. Can be as big as necessary.", expanded=False):
+        with st.expander("A more in-depth description. Can be as big as necessary.", expanded=False):
             st.markdown("""
         ### How the algorithm works:
 
         A description of the algorithm is needed here. There's a bunch of things that can be adjusted and they deserve a word each.
         Also please explain the default values and where that came from. We could even have an AI generate a diagram or two here.""")
 
-        header = st.columns([1,3])
-        header[0].subheader('Property')
-        header[1].subheader('Value')
+        header = st.columns([1])
+        header[0].subheader('Properties')
 
-        row1 = st.columns([1,3])
-        row1[0].markdown("""Height""")
+        row1 = st.columns([1])
         default_height = int(st.session_state.wall_metadata["height"])
-        height = row1[1].slider('height', ALGO_LIMITS.MIN_WALL_HEIGHT, ALGO_LIMITS.MAX_WALL_HEIGHT,
-                                default_height, step=25, key=1, label_visibility='hidden')
+        height = row1[0].slider('Height', ALGO_LIMITS.MIN_WALL_HEIGHT, ALGO_LIMITS.MAX_WALL_HEIGHT, default_height, step=25, key=1)
 
-        row2 = st.columns([1,3])
-        row2[0].markdown("""Width""")
+        row2 = st.columns([1])
         default_width = int(st.session_state.wall_metadata["width"])
-        width = row2[1].slider('width', ALGO_LIMITS.MIN_WALL_WIDTH, ALGO_LIMITS.MAX_WALL_WIDTH,
-                               default_width, step=25, key=2, label_visibility='hidden')
+        width = row2[0].slider('Width', ALGO_LIMITS.MIN_WALL_WIDTH, ALGO_LIMITS.MAX_WALL_WIDTH, default_width, step=25, key=2)
 
-        row3 = st.columns([1, 3])
-        row3[0].markdown("""West Angle""")
-        west_angle = row3[1].slider('west angle', ALGO_LIMITS.MIN_WEST_ANGLE, ALGO_LIMITS.MAX_WEST_ANGLE,
-                                    ALGO_LIMITS.DEFAULT_WEST_ANGLE, step=5, key=3, label_visibility='hidden')
+        row3 = st.columns([1])
+        default_west_angle = ALGO_LIMITS.DEFAULT_WEST_ANGLE
+        west_angle = row3[0].slider('West Angle', ALGO_LIMITS.MIN_WEST_ANGLE, ALGO_LIMITS.MAX_WEST_ANGLE, default_west_angle, step=5, key=3)
 
-        row4 = st.columns([1, 3])
-        row4[0].markdown("""East Angle""")
-        east_angle = row4[1].slider('east angle', ALGO_LIMITS.MIN_EAST_ANGLE, ALGO_LIMITS.MAX_EAST_ANGLE,
-                                    ALGO_LIMITS.DEFAULT_EAST_ANGLE, step=5, key=4, label_visibility='hidden')
+        row4 = st.columns([1])
+        default_east_angle = ALGO_LIMITS.DEFAULT_EAST_ANGLE
+        east_angle = row4[0].slider('East Angle', ALGO_LIMITS.MIN_EAST_ANGLE, ALGO_LIMITS.MAX_EAST_ANGLE, default_east_angle, step=5, key=4)
 
-        row5 = st.columns([1, 3])
-        row5[0].markdown("""Min Hold Distance""")
-        min_hold_distance = row5[1].slider('min hold distance', ALGO_LIMITS.MIN_MIN_HOLD_DISTANCE, ALGO_LIMITS.MAX_MIN_HOLD_DISTANCE,
-                                           ALGO_LIMITS.DEFAULT_MIN_HOLD_DISTANCE, step=5, key=5, label_visibility='hidden')
+        row5 = st.columns([1])
+        default_min_hold_distance = ALGO_LIMITS.DEFAULT_MIN_HOLD_DISTANCE
+        min_hold_distance = row5[0].slider('Min Hold Distance', ALGO_LIMITS.MIN_MIN_HOLD_DISTANCE, ALGO_LIMITS.MAX_MIN_HOLD_DISTANCE, default_min_hold_distance, step=5, key=5)
 
-        row6 = st.columns([1, 3])
-        row6[0].markdown("""Max Hold Distance""")
-        max_hold_distance = row6[1].slider('max hold distance', ALGO_LIMITS.MIN_MAX_HOLD_DISTANCE, ALGO_LIMITS.MAX_MAX_HOLD_DISTANCE,
-                                           ALGO_LIMITS.DEFAULT_MAX_HOLD_DISTANCE, step=5, key=6, label_visibility='hidden')
+        row6 = st.columns([1])
+        default_max_hold_distance = ALGO_LIMITS.DEFAULT_MAX_HOLD_DISTANCE
+        max_hold_distance = row6[0].slider('Max Hold Distance', ALGO_LIMITS.MIN_MAX_HOLD_DISTANCE, ALGO_LIMITS.MAX_MAX_HOLD_DISTANCE, default_max_hold_distance, step=5, key=6)
 
         st.divider()
-        dims = st.columns([1,1])
-
         st.form_submit_button('Generate Route', use_container_width=True, type="primary")
 
     svg_code = generate_svg_preview(height, width, west_angle, east_angle, min_hold_distance, max_hold_distance)
@@ -133,5 +123,8 @@ else:
     """
 
     with st.container(border=True):
+        header = st.columns([1])
+        header[0].subheader('Output')
+
         st.iframe(html, height=532)
         st.download_button("Download SVG", data=svg_code, file_name=f"graphic_sample.svg", mime="image/svg+xml", width='stretch')
