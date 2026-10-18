@@ -28,28 +28,31 @@ def debug_sidebar():
 
 debug_sidebar()
 
-if 'selected_wall' not in st.session_state:
-    st.divider()
-    st.markdown("""**Please select a wall:**""")
-
-    # The routing algorithms need some properties of the wall. Since we already have svg files to represent the walls, I am going to use them to
-    # store the extra data. At the moment that extra data is just default width and height but in a real application you could have a lot more
-    # geometry data to describe the real wall. Then the more appropriate place would be a database or perhaps just JSON files.
-    #
-    # So what is going on here is the svg files are loaded and the 'metadata' is read in together with the svg visual data. Then, when the
-    # click_detector returns the id of the selected wall, that id is used to look up the metadata. The metadata is then added to the session state to
-    # be used by whatever algorithm runs.
-    svgs = load_svgs("wall_*.svg")
-    clicked = click_detector(generate_cards(svgs, WIDE_CARD_HEIGHT))
-
-    if clicked:
-        st.session_state.selected_wall = clicked
-        st.session_state.wall_metadata = svgs[clicked]["metadata"]
-
-        # Here we force a manual rerun of the logic which gets us in the next page of the wizard.
-        st.rerun()
-
-elif 'selected_algo' not in st.session_state:
+# Disable the wall selection.
+#
+# if 'selected_wall' not in st.session_state:
+#     st.divider()
+#     st.markdown("""**Please select a wall:**""")
+#
+#     # The routing algorithms need some properties of the wall. Since we already have svg files to represent the walls, I am going to use them to
+#     # store the extra data. At the moment that extra data is just default width and height but in a real application you could have a lot more
+#     # geometry data to describe the real wall. Then the more appropriate place would be a database or perhaps just JSON files.
+#     #
+#     # So what is going on here is the svg files are loaded and the 'metadata' is read in together with the svg visual data. Then, when the
+#     # click_detector returns the id of the selected wall, that id is used to look up the metadata. The metadata is then added to the session state to
+#     # be used by whatever algorithm runs.
+#     svgs = load_svgs("wall_*.svg")
+#     clicked = click_detector(generate_cards(svgs, WIDE_CARD_HEIGHT))
+#
+#     if clicked:
+#         st.session_state.selected_wall = clicked
+#         st.session_state.wall_metadata = svgs[clicked]["metadata"]
+#
+#         # Here we force a manual rerun of the logic which gets us in the next page of the wizard.
+#         st.rerun()
+#
+# elif 'selected_algo' not in st.session_state:
+if 'selected_algo' not in st.session_state:
     st.divider()
     st.markdown("""**Please select a routing algorithm:**""")
 
@@ -60,6 +63,10 @@ elif 'selected_algo' not in st.session_state:
 
     if clicked:
         st.session_state.selected_algo = clicked
+
+        if 'wall_metadata' not in st.session_state:
+            st.session_state.wall_metadata = {"width": "300", "height": "500"}
+
         st.rerun()
 
 else:
