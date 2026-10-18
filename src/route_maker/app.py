@@ -82,44 +82,38 @@ else:
 
     with st.form("algo_properties"):
         header = st.columns([1])
-        header[0].subheader('Algorithm Name')
+        header[0].subheader('Algorithmus I')
 
-        with st.expander("A more in-depth description. Can be as big as necessary.", expanded=False):
-            st.markdown("""
-        ### How the algorithm works:
-
-        A description of the algorithm is needed here. There's a bunch of things that can be adjusted and they deserve a word each.
-        Also please explain the default values and where that came from. We could even have an AI generate a diagram or two here.""")
 
         header = st.columns([1])
-        header[0].subheader('Properties')
+        header[0].subheader('Properties / Eigenschaften')
 
         row1 = st.columns([1])
         default_height = int(st.session_state.wall_metadata["height"])
-        height = row1[0].slider('Height', ALGO_LIMITS.MIN_WALL_HEIGHT, ALGO_LIMITS.MAX_WALL_HEIGHT, default_height, step=25, key=1)
+        height = row1[0].slider('Height / Höhe', ALGO_LIMITS.MIN_WALL_HEIGHT, ALGO_LIMITS.MAX_WALL_HEIGHT, default_height, step=25, key=1)
 
         row2 = st.columns([1])
         default_width = int(st.session_state.wall_metadata["width"])
-        width = row2[0].slider('Width', ALGO_LIMITS.MIN_WALL_WIDTH, ALGO_LIMITS.MAX_WALL_WIDTH, default_width, step=25, key=2)
+        width = row2[0].slider('Width / Breite', ALGO_LIMITS.MIN_WALL_WIDTH, ALGO_LIMITS.MAX_WALL_WIDTH, default_width, step=25, key=2)
 
         row3 = st.columns([1])
         default_west_angle = ALGO_LIMITS.DEFAULT_WEST_ANGLE
-        west_angle = row3[0].slider('West Angle', ALGO_LIMITS.MIN_WEST_ANGLE, ALGO_LIMITS.MAX_WEST_ANGLE, default_west_angle, step=5, key=3)
+        west_angle = row3[0].slider('Left Angle / linker Winkel', ALGO_LIMITS.MIN_WEST_ANGLE, ALGO_LIMITS.MAX_WEST_ANGLE, default_west_angle, step=5, key=3)
 
         row4 = st.columns([1])
         default_east_angle = ALGO_LIMITS.DEFAULT_EAST_ANGLE
-        east_angle = row4[0].slider('East Angle', ALGO_LIMITS.MIN_EAST_ANGLE, ALGO_LIMITS.MAX_EAST_ANGLE, default_east_angle, step=5, key=4)
+        east_angle = row4[0].slider('Right Angle / rechter Winkel', ALGO_LIMITS.MIN_EAST_ANGLE, ALGO_LIMITS.MAX_EAST_ANGLE, default_east_angle, step=5, key=4)
 
         row5 = st.columns([1])
         default_min_hold_distance = ALGO_LIMITS.DEFAULT_MIN_HOLD_DISTANCE
-        min_hold_distance = row5[0].slider('Min Hold Distance', ALGO_LIMITS.MIN_MIN_HOLD_DISTANCE, ALGO_LIMITS.MAX_MIN_HOLD_DISTANCE, default_min_hold_distance, step=5, key=5)
+        min_hold_distance = row5[0].slider('Min Hold Distance / Mindestabstand', ALGO_LIMITS.MIN_MIN_HOLD_DISTANCE, ALGO_LIMITS.MAX_MIN_HOLD_DISTANCE, default_min_hold_distance, step=5, key=5)
 
         row6 = st.columns([1])
         default_max_hold_distance = ALGO_LIMITS.DEFAULT_MAX_HOLD_DISTANCE
-        max_hold_distance = row6[0].slider('Max Hold Distance', ALGO_LIMITS.MIN_MAX_HOLD_DISTANCE, ALGO_LIMITS.MAX_MAX_HOLD_DISTANCE, default_max_hold_distance, step=5, key=6)
+        max_hold_distance = row6[0].slider('Max Hold Distance / Maximalabstand', ALGO_LIMITS.MIN_MAX_HOLD_DISTANCE, ALGO_LIMITS.MAX_MAX_HOLD_DISTANCE, default_max_hold_distance, step=5, key=6)
 
         st.divider()
-        submitted = st.form_submit_button('Generate Route', use_container_width=True, type="primary")
+        submitted = st.form_submit_button('Generate Route / Route generieren', use_container_width=True, type="primary")
 
     if submitted:
         svg_code = generate_svg_preview(height, width, west_angle, east_angle, min_hold_distance, max_hold_distance)
@@ -135,4 +129,4 @@ else:
             header[0].subheader('Output')
 
             st.iframe(html, height=532)
-            st.download_button("Download SVG", data=svg_code, file_name=f"graphic_sample.svg", mime="image/svg+xml", width='stretch')
+            st.download_button("Download SVG / SVG-Datei herunterladen", data=svg_code, file_name=f"graphic_sample.svg", mime="image/svg+xml", width='stretch')
