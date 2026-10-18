@@ -43,14 +43,16 @@ class Hold(NamedTuple):
     y: int
     type: int
 
-    def to_svg(self) -> str:
+    def to_svg(self, height) -> str:
         style = TYPE_STYLE.get(self.type, TYPE_STYLE[0])
 
+        # The height parameter is necessary because the SVG standard is 0,0 = top-left. So, just before rendering the hold it's flipped.
+
         if style["shape"] == "circle":
-            return f'<circle cx="{self.x}" cy="{self.y}" r="{style["r"]}" fill="{style["fill"]}" />'
+            return f'<circle cx="{self.x}" cy="{height - self.y}" r="{style["r"]}" fill="{style["fill"]}" />'
 
         w, h = style["w"], style["h"]
-        return f'<rect x="{self.x - w / 2}" y="{self.y - h / 2}" width="{w}" height="{h}" fill="{style["fill"]}" />'
+        return f'<rect x="{self.x - w / 2}" y="{height - self.y - h / 2}" width="{w}" height="{h}" fill="{style["fill"]}" />'
 
 def generate_route(height, width, west_angle, east_angle, min_hold_distance, max_hold_distance):
     holds: list[Hold] = []
@@ -82,6 +84,12 @@ def generate_route(height, width, west_angle, east_angle, min_hold_distance, max
                 new_y = last_hold.y + round(distance * math.sin(angle))
 
                 if 0 <= new_x <= width:
+                    # Insert an occasional foothold, above a certain height. It has to be added before the main hold so it does not affect the
+                    # generation of the next 'normal' hold by resetting the height.
+                    if new_y > 175 and rng.random() < 0.10:
+                        holds.append(Hold(x = new_x, y = new_y - 150, type = 5))
+                        print(f"[DEBUG] adding a foothold below: [{new_x}, {new_y}]")
+
                     holds.append(Hold(x = new_x, y = new_y, type = rng.randint(0, 4)))
                     break
                 else:
@@ -102,7 +110,7 @@ def generate_svg_preview(height, width, west_angle, east_angle, min_hold_distanc
       <rect x="0" y="0" width="{canvas_w}" height="{canvas_h}" rx="12" fill="#f8fafc" />"""
 
     for hold in holds:
-        svg += hold.to_svg()
+        svg += hold.to_svg(canvas_h)
 
     svg += f"""
     <text x="12" y="20" font-family="monospace" font-size="12" fill="#64748b">{canvas_w} x {canvas_h}</text>
