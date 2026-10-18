@@ -29,10 +29,28 @@ DEFAULT_MAX_HOLD_DISTANCE: Final[int] = 75
 DEFAULT_START_DISTANCE: Final[int] = 50
 DEFAULT_END_DISTANCE: Final[int] = 50
 
+TYPE_STYLE = {
+    0: {"shape": "rect", "w": 10, "h": 3, "fill": "orange"},    # crimp
+    1: {"shape": "rect", "w": 15, "h": 15, "fill": "black"},    # jug
+    2: {"shape": "circle", "r": 9, "fill": "red"},              # sloper
+    3: {"shape": "rect", "w": 4, "h": 15, "fill": "green"},     # pinch
+    4: {"shape": "circle", "r": 6, "fill": "yellow"},           # pocket
+    5: {"shape": "circle", "r": 2, "fill": "blue"},             # foothold
+}
+
 class Hold(NamedTuple):
     x: int
     y: int
     type: int
+
+    def to_svg(self) -> str:
+        style = TYPE_STYLE.get(self.type, TYPE_STYLE[0])
+
+        if style["shape"] == "circle":
+            return f'<circle cx="{self.x}" cy="{self.y}" r="{style["r"]}" fill="{style["fill"]}" />'
+
+        w, h = style["w"], style["h"]
+        return f'<rect x="{self.x - w / 2}" y="{self.y - h / 2}" width="{w}" height="{h}" fill="{style["fill"]}" />'
 
 def generate_route(height, width, west_angle, east_angle, min_hold_distance, max_hold_distance):
     holds: list[Hold] = []
@@ -84,7 +102,7 @@ def generate_svg_preview(height, width, west_angle, east_angle, min_hold_distanc
       <rect x="0" y="0" width="{canvas_w}" height="{canvas_h}" rx="12" fill="#f8fafc" />"""
 
     for hold in holds:
-        svg += f'\n<circle cx="{hold.x}" cy="{canvas_h - hold.y}" r="3" fill="black" />'
+        svg += hold.to_svg()
 
     svg += f"""
     <text x="12" y="20" font-family="monospace" font-size="12" fill="#64748b">{canvas_w} x {canvas_h}</text>
