@@ -119,19 +119,20 @@ else:
         max_hold_distance = row6[0].slider('Max Hold Distance', ALGO_LIMITS.MIN_MAX_HOLD_DISTANCE, ALGO_LIMITS.MAX_MAX_HOLD_DISTANCE, default_max_hold_distance, step=5, key=6)
 
         st.divider()
-        st.form_submit_button('Generate Route', use_container_width=True, type="primary")
+        submitted = st.form_submit_button('Generate Route', use_container_width=True, type="primary")
 
-    svg_code = generate_svg_preview(height, width, west_angle, east_angle, min_hold_distance, max_hold_distance)
+    if submitted:
+        svg_code = generate_svg_preview(height, width, west_angle, east_angle, min_hold_distance, max_hold_distance)
 
-    html = f"""
-    <div style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:12px; background:white; display:flex; align-items:center; justify-content:center; padding:16px; overflow:hidden; box-sizing:border-box;">
-        {svg_code}
-    </div>
-    """
+        html = f"""
+        <div style="width:100%; height:500px; border:1px solid #e5e7eb; border-radius:12px; background:white; display:flex; align-items:center; justify-content:center; padding:16px; overflow:hidden; box-sizing:border-box;">
+            {svg_code}
+        </div>
+        """
 
-    with st.container(border=True):
-        header = st.columns([1])
-        header[0].subheader('Output')
+        with st.container(border=True):
+            header = st.columns([1])
+            header[0].subheader('Output')
 
-        st.iframe(html, height=532)
-        st.download_button("Download SVG", data=svg_code, file_name=f"graphic_sample.svg", mime="image/svg+xml", width='stretch')
+            st.iframe(html, height=532)
+            st.download_button("Download SVG", data=svg_code, file_name=f"graphic_sample.svg", mime="image/svg+xml", width='stretch')
